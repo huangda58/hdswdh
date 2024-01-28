@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>显示天气</title>
+  <style>
+    #weatherContainer {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+    }
+
+    #showWeatherButton {
+      display: block;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #ffd900;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #showWeatherButton:hover {
+      background-color: #ffd9009c;
+    }
+  </style>
+</head>
+<body>
+  <button id="showWeatherButton">显示天气</button>
+
+  <div id="weatherContainer">
+    <div id="he-plugin-standard"></div>
+    <meta charset="utf-8">
+    <script>
+      WIDGET = {
+        "CONFIG": {
+          "layout": "2",
+          "width": "250",
+          "height": "300",
+          "background": "1",
+          "dataColor": "FFFFFF",
+          "borderRadius": "5",
+          "key": "64d0b3d389ef426ba973b85d37dced45"
+        }
+      }
+    </script>
+    <script src="https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0"></script>
+  </div>
+
+  <script>
+    var showWeatherButton = document.getElementById('showWeatherButton');
+    var weatherContainer = document.getElementById('weatherContainer');
+
+    function toggleWeather() {
+      if (weatherContainer.style.display === 'none' || weatherContainer.style.display === '') {
+        weatherContainer.style.display = 'block';
+      } else {
+        weatherContainer.style.display = 'none';
+      }
+    }
+
+    showWeatherButton.addEventListener('click', toggleWeather);
+    document.addEventListener('click', function(event) {
+      if (!weatherContainer.contains(event.target) && event.target !== showWeatherButton) {
+        weatherContainer.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

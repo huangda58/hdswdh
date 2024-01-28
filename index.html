@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="favicon.ico">
+    <title>黄大起始页</title>
+    <script>
+    if (/MSIE|Trident/.test(window.navigator.userAgent)) window.location.href = "/IE";
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <style>
+        #weatherContainer {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #showWeatherButton {
+            display: block;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #ffd900;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #showWeatherButton:hover {
+            background-color: #ffe030;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url("https://bing.shangzhenyang.com/api/1080p");
+            background-size: cover;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .dialog {
+            width: 0;
+            border-radius: 10px;
+            padding: 20px;
+            
+            text-align: center;
+            margin-top: -0cm;
+            backdrop-filter: blur(20px);
+            transition: width 1s;
+            overflow: hidden;
+        }
+
+        .search-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px 0 0 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    backdrop-filter: blur(5px); /* 添加毛玻璃效果 */
+}
+
+
+        .search-input:focus {
+            backdrop-filter: blur(5px);
+        }
+
+        .search-button {
+            padding: 10px 20px;
+            border-radius: 0 5px 5px 0;
+            background-color: black;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+       
+        }
+
+        .search-button:hover {
+            background-color: #333;
+        }
+
+        .search-button:active {
+            background-color: #666;
+        }
+
+        .quick-access {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .quick-access img {
+            width: 30px;
+            height: 30px;
+            margin: 0 10px;
+        }
+
+        .quick-access img:hover {
+            transform: scale(1.1);
+        }
+
+        .context-menu {
+            position: fixed;
+            
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            z-index: 1000;
+            font-family: Arial, sans-serif;
+            backdrop-filter: blur(20px);
+        }
+
+        .context-menu a {
+            display: block;
+            margin-bottom: 5px;
+            color: black;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .context-menu a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .search-container {
+            display: flex;
+        }
+
+        #time-display {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            font-size: 14px;
+        }
+
+        #hitokoto_text {
+            text-decoration: none;
+            width: 100%;
+            height: 26px;
+            left: 0px;
+            bottom: 150px;
+            box-shadow: 0px 0px 12px #afafaf;
+            color: rgb(255, 255, 255);
+            position: absolute;
+            text-align: center;
+        }
+
+        #hitokoto_text:hover {
+            text-align: center;
+            color: #00000077;
+            transition: all 1s;
+        }
+
+        .contact-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .ckun {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .contact-icons a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 24px;
+            transition: color 0.3s;
+        }
+
+        @media screen and (max-width: 1280px) {
+            .hSiteName {
+                font-size: 13px;
+            }
+
+            #calendar {
+                width: 90px;
+                height: 115px;
+                border-radius: 8px;
+            }
+
+            #calendar .yearMon {
+                font-size: 11px;
+            }
+
+            #calendar .date {
+                font-size: 50px;
+            }
+
+            #calendar .week {
+                font-size: 13px;
+            }
+
+            .hNav {
+                font-size: 14px;
+            }
+        }
+
+        .search-engine-select {
+            position: relative;
+            margin-right: 5px;
+        }
+
+        .search-engine-select select {
+            padding: 15px;
+            border-radius: 0 5px 5px 0;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            appearance: none;
+            background: url('images/searchChoice/scbaidu.png') no-repeat right center / 20px auto;
+        }
+
+        .search-engine-select select::-ms-expand {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <script src="AudioContext.min.js"></script>
+    
+    <div id="he-plugin-simple"></div>
+    <script>
+        WIDGET = {
+            "CONFIG": {
+                "width": 450,
+                "height": 150,
+                "modules": "01234",
+                "background": "5",
+                "tmpColor": "000000",
+                "tmpSize": "16",
+                "cityColor": "000000",
+                "citySize": "16",
+                "aqiColor": "000000",
+                "aqiSize": "16",
+                "weatherIconSize": "24",
+                "alertIconSize": "18",
+                "padding": "10px 10px 10px 10px",
+                "shadow": "0",
+                "language": "auto",
+                "fixed": "true",
+                "vertical": "top",
+                "horizontal": "left",
+                "city": "CN101200605",
+                "left": "10",
+                "top": "10",
+                "key": "f64f5f8d7ca0463697c55e0e7817d427"
+            }
+        }
+    </script>
+    <script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=114514.0"></script>
+    
+     <!-- 
+    <div id="tp-weather-widget"></div>
+  <script>
+    (function(a,h,g,f,e,d,c,b){b=function(){d=h.createElement(g);c=h.getElementsByTagName(g)[0];d.src=e;d.charset="utf-8";d.async=1;c.parentNode.insertBefore(d,c)};a["SeniverseWeatherWidgetObject"]=f;a[f]||(a[f]=function(){(a[f].q=a[f].q||[]).push(arguments)});a[f].l=+new Date();if(a.attachEvent){a.attachEvent("onload",b)}else{a.addEventListener("load",b,false)}}(window,document,"script","SeniverseWeatherWidget","//cdn.sencdn.com/widget2/static/js/bundle.js?t="+parseInt((new Date().getTime() / 100000000).toString(),10)));
+    window.SeniverseWeatherWidget('show', {
+      flavor: "bubble",
+      location: "WX4FBXXFKE4F",
+      geolocation: true,
+      language: "auto",
+      unit: "c",
+      theme: "light",
+      token: "9b28e37c-cacc-4fa2-ae74-c2b6f52afa18",
+      hover: "enabled",
+      container: "tp-weather-widget"
+    })
+  </script>
+   -->
+
+    <div class="container">
+        <div class="dialog">
+            <div id="time-display"></div>
+
+            <div class="search-container">
+                <input type="text" class="search-input" id="search-input" placeholder="请输入搜索内容">
+
+                <!-- 修改的部分：搜索引擎选择框和图标 -->
+                <div class="search-engine-select">
+                    <select id="search-engine" onchange="updateSearchEngineIcon()">
+                        <option value="https://www.baidu.com/s?wd=" data-icon="scbaidu.png">百度</option>
+                        <option value="https://www.sogou.com/web?query=" data-icon="scsougou.png">搜狗</option>
+                        <option value="https://www.bing.com/search?form=&q=" data-icon="scbing.png">必应</option>
+                        <option value="https://www.so.com/s?ie=utf-8&fr=none&src=360sou_newhome&ssid=f591cf2e28d84242884e517e9ba16d1d&sp=a67&cp=0af003d338&nlpv=test_dt_33&q=" data-icon="sc360.png">360搜索</option>
+                        <option value="https://www.google.com/search?q=" data-icon="scgoogle.png">谷歌</option>
+                        <option value="https://search.bilibili.com/all?keyword=" data-icon="B.png">B站</option>
+                    </select>
+                    <img id="search-engine-icon" src="baidu.ico" alt="搜索引擎图标">
+                </div>
+
+                <button class="search-button" onclick="search()">
+                    <img src="searchBtn.png" alt="搜索">
+                </button>
+            </div>
+
+            <div class="quick-access">
+                <a href="https://www.baidu.com"><img src="baidu.ico" alt="百度"></a>
+                <a href="https://www.github.com"><img src="github.ico" alt="GitHub"></a>
+                <a href="https://www.zhihu.com"><img src="zhihu.ico" alt="知乎"></a>
+                <a href="https://www.bilibili.com"><img src="bilibili.ico" alt="B站"></a>
+                <a href="https://music.163.com"><img src="163music.ico" alt="网易云音乐"></a>
+                <a href="https://fanyi.baidu.com"><img src="favicon-32x32.png" alt="百度翻译"></a>
+                <!-- 其他网站图标 -->
+            </div>
+        </div>
+
+        <p id="hitokoto">
+            <a href="#" id="hitokoto_text">「:D 获取中...」</a>
+        </p>
+
+        <!-- 新增的版权声明元素 -->
+
+        <div class="footer">
+            © 2023 黄大起始页.by 我是顾小林
+            <a target="_blank" style="color: white" href="https://beian.miit.gov.cn/">鄂ICP备2023029641号-1</a>
+            <a target="_blank" style="color: white" href="https://swdh.huangda.fun/index1.html">|国际版</a>
+
+          
+<script type="text/javascript" id="myhk" src="https://myhkw.cn/api/player/170593374042" key="170593374042" m="1"></script>
+        </div>
+    </div>
+
+  <script>
+   document.addEventListener("DOMContentLoaded", function() {
+            // 初始设置一次，确保页面加载时显示正确的图标
+            updateSearchEngineIcon();
+        });
+
+        function updateSearchEngineIcon() {
+            var searchEngineSelect = document.getElementById("search-engine");
+            var iconElement = document.getElementById("search-engine-icon");
+
+            // 获取当前选择的搜索引擎的图标路径
+            var selectedOption = searchEngineSelect.options[searchEngineSelect.selectedIndex];
+            var iconPath = selectedOption.getAttribute("data-icon");
+
+            // 更新图标元素的 src 属性
+            iconElement.src = iconPath;
+        }
+
+
+
+
+
+    fetch('https://v1.hitokoto.cn')
+        .then(response => response.json())
+        .then(data => {
+          const hitokoto = document.querySelector('#hitokoto_text')
+          hitokoto.href = `https://hitokoto.cn/?uuid=${data.uuid}`
+          hitokoto.innerText = data.hitokoto
+        })
+        .catch(console.error)
+
+
+
+        function search() {
+  var inputValue = document.getElementById("search-input").value;
+  var searchEngine = document.getElementById("search-engine");
+  var engineUrl = searchEngine.options[searchEngine.selectedIndex].value;
+  var url = engineUrl + encodeURIComponent(inputValue);
+  window.location.href = url;
+}
+
+    document.addEventListener("contextmenu", function(e) {
+      e.preventDefault();
+
+      var menu = document.createElement("div");
+      menu.className = "context-menu";
+      menu.style.top = e.clientY + "px";
+      menu.style.left = e.clientX + "px";
+      
+
+      var links = [
+        { name: "每日60秒新闻", url: "/mr60s.html" },
+        { name: "小游戏", url: "https://www.4399.com" },
+        { name: "GitHub", url: "https://www.github.com" },
+        { name: "Baidu", url: "https://www.baidu.com" },
+        { name: "bilibili", url: "https://www.bilibili.com/" },
+        { name: "顾小林的网站", url: "https://hdgxl.com" },
+        { name: "知乎", url: "https://www.zhihu.com" },
+        { name: "刷新页面", url: "javascript:location.reload();" },
+      ];
+      
+
+      for (var i = 0; i < links.length; i++) {
+        var link = document.createElement("a");
+        link.href = links[i].url;
+        link.textContent = links[i].name;
+        menu.appendChild(link);
+      }
+fetch("https://bing.shangzhenyang.com/api/json")
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(data) {
+      var image = data.images[0];
+      var link = document.createElement("a");
+
+      link.href = image.urlbase;
+      link.textContent = image.title;
+
+      // 获取版权信息
+      var copyright = image.copyright;
+
+      // 获取描述信息
+      var description = image.description;
+
+      // 将链接、版权信息和描述添加到菜单项中
+      var menuItem = document.createElement("div");
+      menuItem.appendChild(link);
+
+      // 显示版权信息
+      var copyrightElement = document.createElement("a");
+      copyrightElement.textContent = "版权信息: " + copyright;
+      menuItem.appendChild(copyrightElement);
+
+      // 显示描述
+    
+
+      // 将菜单项添加到上下文菜单中
+      menu.appendChild(menuItem);
+
+   
+
+      // 添加样式以使菜单项看起来像一个菜单
+     
+
+      // 将菜单添加到上下文菜单中
+      document.body.appendChild(menu);
+  });
+
+
+      document.addEventListener("click", function() {
+        menu.remove();
+      });
+    });
+
+    window.onload = function() {
+      var dialog = document.querySelector(".dialog");
+      dialog.style.width = "30cm";
+    };
+
+    // 新增的JavaScript代码
+    function updateTime() {
+      var now = new Date();
+      var hours = now.getHours().toString().padStart(2, '0');
+      var minutes = now.getMinutes().toString().padStart(2, '0');
+      var seconds = now.getSeconds();
+      var timeDisplay = document.getElementById('time-display');
+      if (seconds % 2 === 0) {
+        timeDisplay.textContent = hours + ":" + minutes;
+      } else {
+        timeDisplay.textContent = hours + " " + minutes;
+      }
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+   
+    function blurBackground(blur) {
+  var container = document.querySelector('.container');
+  if (blur) {
+    container.style.backdropFilter = 'blur(5px)';
+    container.style.webkitBackdropFilter = 'blur(5px)';
+  } else {
+    container.style.backdropFilter = 'none';
+    container.style.webkitBackdropFilter = 'none';
+  }
+}
+
+var showWeatherButton = document.getElementById('showWeatherButton');
+    var weatherContainer = document.getElementById('weatherContainer');
+
+    function toggleWeather() {
+      if (weatherContainer.style.display === 'none' || weatherContainer.style.display === '') {
+        weatherContainer.style.display = 'block';
+      } else {
+        weatherContainer.style.display = 'none';
+      }
+    }
+
+    showWeatherButton.addEventListener('click', toggleWeather);
+    document.addEventListener('click', function(event) {
+      if (!weatherContainer.contains(event.target) && event.target !== showWeatherButton) {
+        weatherContainer.style.display = 'none';
+      }
+    });
+
+
+  </script>
+
+</body>
+
+</html>

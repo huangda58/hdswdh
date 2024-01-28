@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每日60S早报</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin-bottom: 5px;
+            font-size: 2em;
+        }
+
+        header img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header p {
+            font-size: 0.8em;
+        }
+
+        section {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        section h2 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1.4;
+            opacity: 0;
+            animation: fadeIn 0.8s forwards;
+        }
+
+        section p {
+            color: #777;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+
+        footer a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        #loadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #loadingSpinner {
+            border: 8px solid #3498db;
+            border-radius: 50%;
+            border-top: 8px solid #f4f4f4;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+  <div id="loadingOverlay">
+   
+    <div id="loadingSpinner"></div>
+    <p> </p>
+    <br>
+    <p>加载中……</p>
+</div>
+
+    <header>
+        <h1>黄大每日60S早报</h1>
+        <img id="headImage" alt="头图">
+        <p id="date"></p>
+    </header>
+
+    <section id="importantNews">
+        <h2>重要新闻</h2>
+        <ul id="newsList"></ul>
+    </section>
+
+    <section>
+        <h2>微语</h2>
+        <p id="weiyu"></p>
+    </section>
+
+    <footer>
+        <p>更多详情请访问博客：<a href="https://blog.hdgxl.com/" target="_blank">https://blog.hdgxl.com/</a></p>
+        <p>&copy; 2024 黄大每日60S早报 求收藏qvq</p>
+    </footer>
+
+    <script>
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        // Show loading overlay
+        function showLoadingOverlay() {
+            loadingOverlay.style.display = 'flex';
+        }
+
+        // Hide loading overlay
+        function hideLoadingOverlay() {
+            loadingOverlay.style.display = 'none';
+        }
+
+        // Fetch data from the secure API
+        showLoadingOverlay(); // Show loading overlay before fetch
+        fetch('https://api.suxun.site/api/sixs?type=json')
+            .then(response => response.json())
+            .then(data => {
+                // Update header information
+                document.getElementById('headImage').src = data.head_image;
+                document.getElementById('date').textContent = '日期: ' + data.date;
+
+                // Update important news with fade-in animation
+                const newsList = document.getElementById('newsList');
+                data.news.forEach((newsItem, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = newsItem;
+                    listItem.style.animationDelay = `${index * 0.2}s`;
+                    newsList.appendChild(listItem);
+                });
+
+                // Update 微语
+                document.getElementById('weiyu').textContent = data.weiyu;
+
+                hideLoadingOverlay(); // Hide loading overlay after fetch
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                hideLoadingOverlay(); // Hide loading overlay in case of an error
+            });
+    </script>
+</body>
+</html>
